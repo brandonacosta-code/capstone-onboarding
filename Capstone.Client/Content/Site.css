@@ -1,0 +1,56 @@
+﻿@import url(/Content/lib/default-main.css);
+
+
+:root {
+    --header-height: 72px;
+    --body-height: calc(100vh - var(--header-height));
+}
+
+body {
+    font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+    background-color: #fff;
+    padding: 0;
+    margin: 0;
+}
+
+
+.body {
+    display: flex;
+    height: var(--body-height);
+}
+
+.body nav {
+    background-color: #333;
+    color: #fff;
+}
+
+
+.body nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.body nav ul li {
+    padding: 10px;
+}
+
+.body nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.body nav ul li a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.body nav ul li.active {
+    background-color: #fff;
+}
+
+.body nav ul li.active a {
+    color: #333;
+}
