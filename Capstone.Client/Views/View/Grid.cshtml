@@ -1,7 +1,215 @@
-<div data-role="grid"
-     data-columns="[
-            { 'field': 'Name', 'width': 270 },
-            { 'field': 'UnitPrice' },
-     ]"
-     data-bind="source: products"
-     style="height: 200px"></div>
+<!-- ===== Styles ===== -->
+<style>
+	:root {
+		--navbar-color: #333;
+		--accent: #5b8dee;
+		--accent-dark: #3a6fd8;
+		--bg-panel: #f4f6fb;
+		--border: #dde3ef;
+		--text-main: #222;
+		--text-muted: #888;
+		--shadow-sm: 0 2px 8px rgba(0,0,0,.08);
+		--shadow-md: 0 4px 18px rgba(0,0,0,.13);
+		--radius: 10px;
+	}
+
+	.grid-wrapper {
+		background: var(--bg-panel);
+		border-radius: var(--radius);
+		box-shadow: var(--shadow-md);
+		padding: 24px 28px 28px;
+		font-family: 'Segoe UI', Arial, sans-serif;
+	}
+
+	.grid-header-title {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 20px;
+	}
+
+		.grid-header-title h2 {
+			margin: 0;
+			font-size: 1.2rem;
+			font-weight: 700;
+			color: var(--navbar-color);
+			letter-spacing: .3px;
+		}
+
+		.grid-header-title .title-bar {
+			width: 4px;
+			height: 22px;
+			background: var(--accent);
+			border-radius: 4px;
+		}
+
+	.grid-controls {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex-wrap: wrap;
+		margin-bottom: 18px;
+	}
+
+	.search-wrapper {
+		position: relative;
+		flex: 1;
+		min-width: 180px;
+	}
+
+		.search-wrapper .search-icon {
+			position: absolute;
+			left: 13px;
+			top: 50%;
+			transform: translateY(-50%);
+			color: var(--text-muted);
+			font-size: 15px;
+			pointer-events: none;
+		}
+
+	#searchInput {
+		width: 100%;
+		box-sizing: border-box;
+		padding: 9px 14px 9px 38px;
+		border: 1.5px solid var(--border);
+		border-radius: 50px;
+		font-size: .92rem;
+		color: var(--text-main);
+		background: #fff;
+		box-shadow: var(--shadow-sm);
+		outline: none;
+		transition: border-color .2s, box-shadow .2s;
+	}
+
+		#searchInput:focus {
+			border-color: var(--accent);
+			box-shadow: 0 0 0 3px rgba(91,141,238,.15);
+		}
+
+		#searchInput::placeholder {
+			color: var(--text-muted);
+		}
+
+	.sort-select {
+		padding: 9px 32px 9px 12px;
+		border: 1.5px solid var(--border);
+		border-radius: 50px;
+		font-size: .88rem;
+		color: var(--text-main);
+		background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E") no-repeat right 12px center;
+		appearance: none;
+		cursor: pointer;
+		box-shadow: var(--shadow-sm);
+		outline: none;
+		transition: border-color .2s;
+	}
+
+		.sort-select:focus {
+			border-color: var(--accent);
+		}
+
+	.grid-container {
+		border-radius: var(--radius);
+		overflow: hidden;
+		border: 1.5px solid var(--border);
+		box-shadow: var(--shadow-sm);
+		margin-top: 18px;
+	}
+
+		.grid-container .k-grid-header {
+			background: var(--navbar-color) !important;
+			border-color: transparent !important;
+		}
+
+			.grid-container .k-grid-header th {
+				color: #fff !important;
+				font-weight: 600;
+				font-size: .88rem;
+				letter-spacing: .4px;
+				border-color: rgba(255,255,255,.12) !important;
+				padding: 11px 14px;
+			}
+
+		.grid-container .k-grid-content tr:nth-child(even) {
+			background: #f8f9fd;
+		}
+
+		.grid-container .k-grid-content tr:hover {
+			background: #eef2fc !important;
+		}
+
+		.grid-container .k-grid-content td {
+			font-size: .9rem;
+			color: var(--text-main);
+			border-color: var(--border) !important;
+			padding: 10px 14px;
+		}
+
+		.grid-container .k-pager-wrap {
+			background: #f0f2f8 !important;
+			border-top: 1.5px solid var(--border) !important;
+			font-size: .83rem;
+		}
+</style>
+
+<!-- Template outside grid-wrapper -->
+<script id="view-template" type="text/x-kendo-template">
+	<a href="\#/product/#=Id#">View</a>
+</script>
+
+<!-- ===== MARKUP ===== -->
+<div class="grid-wrapper">
+
+	<!-- title -->
+	<div class="grid-header-title">
+		<span class="title-bar"></span>
+		<h2>Products</h2>
+	</div>
+
+	<!-- Controls search and selects -->
+	<div class="grid-controls">
+
+		<!-- search -->
+		<div class="search-wrapper">
+			<span class="search-icon">&#128269;</span>
+			<input type="text"
+				   id="searchInput"
+				   data-bind="value: search,
+                              events: { keyup: searchProducts }"
+				   placeholder="Search products..."
+				   maxlength="30" />
+		</div>
+
+		<!-- order by field -->
+		<select class="sort-select"
+				id="sortBySelect"
+				data-bind="events: { change: sortProducts }">
+			<option value="">Sort by...</option>
+			<option value="Name">Name</option>
+			<option value="UnitPrice">Unit Price</option>
+		</select>
+
+		<!-- sort direction -->
+		<select class="sort-select"
+				id="sortDirectionSelect"
+				data-bind="events: { change: sortProducts }">
+			<option value="asc">Ascending</option>
+			<option value="desc">Descending</option>
+		</select>
+
+	</div>
+
+	<!-- Grid out of grid-controls -->
+	<div class="grid-container">
+		<div data-role="grid"
+			 data-columns="[
+                 { 'field': 'Name', 'width': 270 },
+                 { 'field': 'UnitPrice' },
+                 { 'title': 'Actions', 'width': 100, 'template': '#= renderViewLink(Id) #' }
+             ]"
+			 data-bind="source: products"
+			 style="height: 350px">
+		</div>
+	</div>
+
+</div>
