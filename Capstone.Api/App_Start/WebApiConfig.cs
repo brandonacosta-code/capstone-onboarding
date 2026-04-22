@@ -3,6 +3,7 @@ using System;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using Capstone.Api.Unity;
 using Capstone.Application.MediatR;
 using MediatR;
@@ -10,6 +11,9 @@ using Unity;
 using Unity.Lifetime;
 using Newtonsoft.Json;
 using Capstone.Infrastructure.Repositories;
+using System.Configuration;
+using Unity.Injection;
+using Capstone.Core.Interfaces;
 
 namespace Capstone.Api
 {
@@ -24,12 +28,17 @@ namespace Capstone.Api
 
             var container = new UnityContainer();
 
+            string connString = ConfigurationManager
+                .ConnectionStrings["CapstoneDB"]
+                .ConnectionString;
+
             container.RegisterMediator(new HierarchicalLifetimeManager());
             container.RegisterMediatorHandlers(Assembly.GetAssembly(typeof(Ping)));
             container.RegisterType<IMediator, Mediator>(new ContainerControlledLifetimeManager());
             container.RegisterType<IMessageBus, MessageBus>(new ContainerControlledLifetimeManager());
-            container.RegisterType<IProductRepository, ProductRepository>(new ContainerControlledLifetimeManager());
-            config.DependencyResolver = new UnityResolver(container);
+            container.RegisterType<IProductRepository, ProductRepository>(new ContainerControlledLifetimeManager(), new InjectionConstructor(connString));
+			container.RegisterType<IOrderRepository, OrderRepository>(new ContainerControlledLifetimeManager(), new InjectionConstructor(connString));
+			config.DependencyResolver = new UnityResolver(container);
 
 
             config.Formatters.Add(new BrowserJsonFormatter());

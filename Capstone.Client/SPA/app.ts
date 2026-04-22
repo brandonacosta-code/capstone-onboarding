@@ -7,5 +7,11 @@ import { RouterInstance } from "./router.js";
 
 const appElement = document.getElementById("app");
 const main = await KendoViewBuilder.build(new AppController());
+
+RouterInstance.$currentPath.subscribe(() => {
+	const outlet = document.querySelector('#router-outlet');
+	if (outlet) outlet.innerHTML = "";
+});
+
 RouterInstance.start(main.view);
 main.view.render(appElement);
