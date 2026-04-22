@@ -5,33 +5,33 @@ using System.Threading.Tasks;
 
 namespace Capstone.Application.MediatR
 {
-    public interface IMessageBus
-    {
-        TResponse Send<TResponse>(IRequest<TResponse> request);
-        Task SendAsync<TResponse>(IRequest<TResponse> request);
-    }
+	public interface IMessageBus
+	{
+		TResponse Send<TResponse>(IRequest<TResponse> request);
+		Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request); 
+	}
 
-    public class MessageBus : IMessageBus
-    {
-        private readonly IMediator _mediator;
+	public class MessageBus : IMessageBus
+	{
+		private readonly IMediator _mediator;
 
-        public MessageBus(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+		public MessageBus(IMediator mediator)
+		{
+			_mediator = mediator;
+		}
 
-        public TResponse Send<TResponse>(IRequest<TResponse> request)
-        {
-            return _mediator.Send(request).GetAwaiter().GetResult();
-        }
+		public TResponse Send<TResponse>(IRequest<TResponse> request)
+		{
+			return _mediator.Send(request).GetAwaiter().GetResult();
+		}
 
-        public async Task SendAsync<TResponse>(IRequest<TResponse> request)
-        {
-            await _mediator.Send(request).ConfigureAwait(false);
-        }
-    }
+		public async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request) 
+		{
+			return await _mediator.Send(request).ConfigureAwait(false); 
+		}
+	}
 
-    public class Ping : IRequest<bool>
+	public class Ping : IRequest<bool>
     {
         public string Name { get; set; }
     }

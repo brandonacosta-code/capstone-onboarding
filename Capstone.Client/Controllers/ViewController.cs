@@ -25,8 +25,17 @@ namespace Capstone.Client.Controllers
             return RenderViewToString("grid", null);
         }
 
+        public string Product()
+        {
+            return RenderViewToString("product", null);
+        }
 
-        public string RenderViewToString(string viewName, object model)
+		public string Cart()
+		{
+			return RenderViewToString("cart", null);
+		}
+
+		public string RenderViewToString(string viewName, object model)
         {
             ViewData.Model = model;
             using (var sw = new StringWriter())

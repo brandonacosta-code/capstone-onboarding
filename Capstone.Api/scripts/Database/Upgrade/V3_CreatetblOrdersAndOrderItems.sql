@@ -1,0 +1,23 @@
+--V3 Upgrade: Create tblOrders and tblOrderItems
+
+CREATE TABLE tblOrders(
+	Id INT IDENTITY(1,1) PRIMARY KEY,
+	CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+	Subtotal DECIMAL(18,2) NOT NULL,
+	Tax DECIMAL(18,2) NOT NULL,
+	Shipping DECIMAL(18,2) NOT NULL,
+	Total DECIMAL(18,2) NOT NULL
+);
+
+CREATE TABLE tblOrderItems(
+	Id INT IDENTITY(1,1) PRIMARY KEY,
+	OrderId INT NOT NULL,
+	ProductId INT NOT NULL,
+	Qty INT NOT NULL,
+	UnitPrice DECIMAL(18,2) NOT NULL,
+	Amount DECIMAL(18,2) NOT NULL,
+	CONSTRAINT FK_OrderItems_Orders
+		FOREIGN KEY (OrderId) REFERENCES tblOrders(Id),
+	CONSTRAINT FK_OrderItems_Products
+		FOREIGN KEY (ProductId) REFERENCES tblProducts(Id)
+);

@@ -1,15 +1,20 @@
-﻿using GreenSlate.Core.KendoDynamicLinq;
-using MediatR;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Capstone.Core.DTOs;
+using Capstone.Core.Interfaces;
 using Capstone.Infrastructure.Repositories;
-using System.Collections.Generic;
+using MediatR;
 
 namespace Capstone.Application.CQRS.Queries
 {
     public class GetProductsQuery : IRequest<List<ProductDTO>>
-    { }
+    { 
+        public string Search { get; set; }
+        public string SortBy { get; set; }
+        public string SortDirection { get; set; }
+    }
 
     public class GetProductsQueryHandle : IRequestHandler<GetProductsQuery, List<ProductDTO>>
     {
@@ -20,9 +25,15 @@ namespace Capstone.Application.CQRS.Queries
             _productRepository = productRepository;
         }
 
-        public Task<List<ProductDTO>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(_productRepository.GetProducts().AsEnumerable().ToList());
-        }
-    }
+		public async Task<List<ProductDTO>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
+		{
+			var result = await _productRepository.GetProducts(
+				request.Search,
+				request.SortBy,
+				request.SortDirection
+			);
+
+			return result.ToList();
+		}
+	}
 }

@@ -175,6 +175,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="package.json" />
+    <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -192,7 +193,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\SPA\0-kendo-wrapper\decorators\kendo-decorator.map.js.map" />
@@ -216,6 +216,8 @@
     <Content Include="Views\View\Grid.cshtml" />
     <Content Include="Views\View\Home.cshtml" />
     <Content Include="Views\View\Index.cshtml" />
+    <Content Include="Views\View\Product.cshtml" />
+    <Content Include="Views\View\Cart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="SPA\0-kendo-wrapper\decorators\kendo-decorator.map.ts" />
@@ -228,13 +230,18 @@
     <TypeScriptCompile Include="SPA\0-kendo-wrapper\resourses.fetcher.ts" />
     <TypeScriptCompile Include="SPA\app.ts" />
     <TypeScriptCompile Include="SPA\controllers\app.controller.ts" />
+    <TypeScriptCompile Include="SPA\controllers\cart.controller.ts" />
     <TypeScriptCompile Include="SPA\controllers\grid.controller.ts" />
     <TypeScriptCompile Include="SPA\controllers\home.controller.ts" />
+    <TypeScriptCompile Include="SPA\controllers\product.controller.ts" />
     <TypeScriptCompile Include="SPA\router.ts" />
+    <TypeScriptCompile Include="SPA\utils\cart.service.ts" />
     <TypeScriptCompile Include="SPA\utils\global.state.ts" />
     <TypeScriptCompile Include="SPA\view-model\app.vm.ts" />
+    <TypeScriptCompile Include="SPA\view-model\cart.vm.ts" />
     <TypeScriptCompile Include="SPA\view-model\grid.vm.ts" />
     <TypeScriptCompile Include="SPA\view-model\home.vm.ts" />
+    <TypeScriptCompile Include="SPA\view-model\product.vm.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

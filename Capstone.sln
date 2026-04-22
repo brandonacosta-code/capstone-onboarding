@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.6.33723.286
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11626.88 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.Api", "Capstone.Api\Capstone.Api.csproj", "{298A4E7D-B5B7-41B1-9B1F-D2CF6490A07D}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.Core", "Capstone.Core\Capstone.Core.csproj", "{AAE5220B-36CA-428D-B408-FED630B7BEB4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.Infrastructure", "Capstone.Infrastructure\Capstone.Infrastructure.csproj", "{394C6667-AEDB-4666-8AF2-1BDDA6A84620}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.Tests", "Capstone.Tests1\Capstone.Tests.csproj", "{7A26CCAD-0943-4707-B51B-6A79BAAE5342}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{394C6667-AEDB-4666-8AF2-1BDDA6A84620}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{394C6667-AEDB-4666-8AF2-1BDDA6A84620}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{394C6667-AEDB-4666-8AF2-1BDDA6A84620}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A26CCAD-0943-4707-B51B-6A79BAAE5342}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A26CCAD-0943-4707-B51B-6A79BAAE5342}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A26CCAD-0943-4707-B51B-6A79BAAE5342}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A26CCAD-0943-4707-B51B-6A79BAAE5342}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

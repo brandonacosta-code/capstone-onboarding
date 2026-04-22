@@ -167,17 +167,24 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Scripts\Database\Downgrade\V2_RemoveProductDetails.sql" />
+    <Content Include="Scripts\Database\Downgrade\V3_RemoveOrdersAndOrderItems.sql" />
+    <Content Include="Scripts\Database\Upgrade\V1_CapstoneInitScript.sql" />
     <Compile Include="Unity\UnityContainerExtensions.cs" />
     <Compile Include="Unity\UnityResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\Database\Upgrade\V2_AddProductDetails.sql" />
+    <Content Include="Scripts\Database\Upgrade\V3_CreatetblOrdersAndOrderItems.sql" />
+    <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -196,7 +203,6 @@
     <Folder Include="Areas\" />
     <Folder Include="Content\" />
     <Folder Include="Models\" />
-    <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -205,6 +211,10 @@
     <ProjectReference Include="..\Capstone.Application\Capstone.Application.csproj">
       <Project>{6ff94bc6-4698-4cad-bfe7-3b138f967f68}</Project>
       <Name>Capstone.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Capstone.Core\Capstone.Core.csproj">
+      <Project>{aae5220b-36ca-428d-b408-fed630b7beb4}</Project>
+      <Name>Capstone.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Capstone.Infrastructure\Capstone.Infrastructure.csproj">
       <Project>{394C6667-AEDB-4666-8AF2-1BDDA6A84620}</Project>

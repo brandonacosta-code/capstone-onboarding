@@ -62,12 +62,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="DTOs\CreateOrderDTO.cs" />
+    <Compile Include="DTOs\OrderItemDTO.cs" />
+    <Compile Include="DTOs\OrderSummaryDTO.cs" />
+    <Compile Include="DTOs\ProductDTO.cs" />
+    <Compile Include="Interfaces\IOrderRepository.cs" />
+    <Compile Include="Interfaces\IProductRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
