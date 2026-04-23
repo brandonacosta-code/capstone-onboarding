@@ -6,6 +6,31 @@ declare var kendo: any;
 	if (vm) vm.addToCart();
 };
 
+function showNotification(message: string, type: 'success' | 'error'): void {
+    const overlay = document.getElementById('notification');
+    const icon = document.getElementById('notification-icon');
+    const msg = document.getElementById('notification-message');
+    const product = document.getElementById('notification-product');
+
+    if (!overlay || !icon || !msg) return;
+
+    icon.style.background = type === 'success' ? '#3d5a6b' : '#c0392b';
+    msg.style.color = type === 'success' ? '#3d5a6b' : '#c0392b';
+    msg.textContent = message;
+
+    if (product) {
+        const vm = (window as any).currentProductVM;
+        product.textContent = type === 'success' && vm
+            ? vm.product.Name
+            : '';
+    }
+
+    overlay.style.display = 'flex';
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 2000);
+}
+
 export class ProductVM {
 	public product: any;
 
@@ -32,59 +57,75 @@ export class ProductVM {
 		}
 	}
 
-	private async load(id: string)
-	{
-		const url = `https://localhost:44325/api/product/${id}`;
+    private async load(id: string) {
+        const url = 'https://localhost:44325/api/product/' + id;
 
-		try {
-			const res = await fetch(url);
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('Error ' + res.status);
 
-			if (!res.ok) {
-				throw new Error(`Error ${res.status}: ${res.statusText}`);
-			}
+            const data = await res.json();
+            const originalStock = parseInt(data.Stock, 10);
 
-			const data = await res.json();
-			const stock = parseInt(data.Stock, 10)
+            // Check if already in cart
+            const inCart = CartService.getItems()
+                .find(i => i.productId === data.Id);
 
-			this.product.set('Id', data.Id);
-			this.product.set('Name', data.Name);
-			this.product.set('Description', data.Description);
-			this.product.set('ImageUrl', data.ImageUrl);
-			this.product.set('Stock', stock);
-			this.product.set('inStock', stock > 0);
-			this.product.set('outOfStock', stock <= 0);
-			this.product.set('UnitPrice', data.UnitPrice);
-		} catch (e) {
-			console.error(e);
-		}
-	}
+            const qtyInCart = inCart ? inCart.qty : 0;
+            const stockToShow = originalStock - qtyInCart;
 
-	public addToCart = () => {
-		const stock = this.product.Stock;
+            this.product.set('Id', data.Id);
+            this.product.set('Name', data.Name);
+            this.product.set('Description', data.Description);
+            this.product.set('ImageUrl', data.ImageUrl);
+            this.product.set('UnitPrice', data.UnitPrice);
+            this.product.set('Stock', stockToShow);
+            this.product.set('inStock', stockToShow > 0);
+            this.product.set('outOfStock', stockToShow <= 0);
 
-		if (stock <= 0) {
-			alert('The product is not available');
-			return;
-		}
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
-		const inCart = CartService.getItems()
-			.find(i => i.productId === this.product.Id);
+    public addToCart = () => {
+        const currentStock = parseInt(this.product.get('Stock'), 10);
 
-		if (inCart && inCart.qty >= stock) {
-			alert('No more stock available');
-			return;
-		}
+        if (currentStock <= 0) {
+            showNotification('This product is not available', 'error');
+            return;
+        }
 
-		CartService.addItem({
-			productId: this.product.Id,
-			name: this.product.Name,
-			qty: 1,
-			unitPrice: this.product.UnitPrice,
-			amount: this.product.UnitPrice,
-			stock: stock
-		});
+        const inCart = CartService.getItems()
+            .find(i => i.productId === this.product.Id);
 
-		alert(this.product.Name + ' added to cart');
-	}
+        const originalStock = inCart ? inCart.stock : currentStock;
+
+        if (inCart && inCart.qty >= originalStock) {
+            showNotification('No more stock available', 'error');
+            return;
+        }
+
+        CartService.addItem({
+            productId: this.product.Id,
+            name: this.product.Name,
+            qty: 1,
+            unitPrice: this.product.UnitPrice,
+            amount: this.product.UnitPrice,
+            stock: originalStock
+        });
+
+        const inCartNow = CartService.getItems()
+            .find(i => i.productId === this.product.Id);
+        const qtyInCart = inCartNow ? inCartNow.qty : 0;
+        const realStock = inCartNow ? inCartNow.stock : originalStock;
+        const remainingStock = realStock - qtyInCart;
+
+        this.product.set('Stock', remainingStock);
+        this.product.set('inStock', remainingStock > 0);
+        this.product.set('outOfStock', remainingStock <= 0);
+
+        showNotification('Added to cart!', 'success');
+    }
 
 }
