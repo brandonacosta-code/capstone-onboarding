@@ -15,4 +15,10 @@ public static class ProductDetailPage
         PlaywrightLocator.L(
             "Added to Cart Confirmation Modal",
             "#notification");
+
+    // "Out of stock" message shown when stock reaches 0 — strong inside the outOfStock div
+    public static IPlaywrightLocator OutOfStockMessage =>
+        PlaywrightLocator.L(
+            "Out of Stock Message",
+            "div[data-bind='visible: product.outOfStock'] strong");
 }

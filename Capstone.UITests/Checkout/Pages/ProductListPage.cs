@@ -9,4 +9,10 @@ public static class ProductListPage
         PlaywrightLocator.L(
             "First Product View Button",
             ".k-grid-content tr:first-child a");
+
+    // "View" link in the row that contains "Milk Chocolate" (stock = 5)
+    public static IPlaywrightLocator MilkChocolateViewButton =>
+        PlaywrightLocator.L(
+            "Milk Chocolate View Button",
+            ".k-grid-content tr:has-text('Milk Chocolate') a");
 }
