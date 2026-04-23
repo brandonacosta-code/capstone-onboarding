@@ -10,6 +10,7 @@ public abstract class TestBase
     private BrowseTheWebWithPlaywright _ability = null!;
 
     protected IActor Actor { get; private set; } = null!;
+    protected IPage Page => _ability.CurrentPage;
 
     protected const string BaseUrl = "http://localhost:53019/#/products";
 
