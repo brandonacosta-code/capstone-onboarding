@@ -1,14 +1,48 @@
 @{
 	Layout = null;
 }
+
+<!-- Notification modal -->
+<div id="notification" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;">
+	<div id="notification-box" style="
+        background: white;
+        border-radius: 12px;
+        padding: 40px 50px;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        min-width: 260px;">
+		<div id="notification-icon" style="
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;">
+			<span style="color: white; font-size: 28px;">&#10003;</span>
+		</div>
+		<h3 id="notification-message"
+			style="margin: 0 0 8px; font-size: 18px;">
+		</h3>
+		<p id="notification-product"
+		   style="color: #666; margin: 0; font-size: 14px;">
+		</p>
+	</div>
+</div>
+
 <div style="padding: 20px">
 
 	<!-- Header -->
 	<div style="background: linear-gradient(135deg, #2c3e50, #3d5a6b);
-		 padding: 40px;
-		 border-radius: 8px;
-		 margin-bottom: 30px;
-		 text-align: center;">
+         padding: 40px; border-radius: 8px;
+         margin-bottom: 30px; text-align: center;">
 		<h1 style="color: white; font-size: 2em;"
 			data-bind="text: product.Name">
 		</h1>
@@ -16,19 +50,15 @@
 
 	<!-- Product Detail -->
 	<div style="display: flex; gap: 30px; background: white;
-			border-radius: 8px;
-			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-			padding: 30px;
-			max-width: 900px;
-			margin: 0 auto;">
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 30px; max-width: 900px; margin: 0 auto;">
 
 		<!-- Image -->
 		<div style="flex: 1; max-width: 400px">
 			<img data-bind="attr: {src: product.ImageUrl}"
-				 style="width: 100%;
-						height: 350px;
-						border-radius: 8px;
-						object-fit: cover;"
+				 style="width: 100%; height: 350px;
+                        border-radius: 8px; object-fit: cover;"
 				 onerror="this.src='/Content/images/no-image.png'" />
 		</div>
 
@@ -42,32 +72,31 @@
 			   style="color: #666; line-height:1.6;">
 			</p>
 
-			<!-- Stock -->
+			<!-- Stock  -->
 			<div data-bind="visible: product.inStock">
 				<p style="color: #333;">
 					<strong>In stock:</strong>
 					<span data-bind="text: product.Stock"></span>
 				</p>
 			</div>
-			<div style="display: none" data-bind="visible: product.outOfStock">
+
+			<!-- No stock-->
+			<div style="display: none"
+				 data-bind="visible: product.outOfStock">
 				<p style="color: red; font-weight: bold;">
 					<strong>Out of stock</strong>
 				</p>
 			</div>
 
-			<!-- Add to cart button-->
+			<!-- Button -->
 			<button onclick="productVM_addToCart()"
 					data-bind="visible: product.inStock"
-					style="display: none; 
-					width: 100%;
-					padding: 15px;
-					background: #3d5a6b;
-					color: white;
-					border: none;
-					border-radius: 8px;
-					font-size: 16px;
-					cursor: pointer;
-					margin-top: 20px;">
+					style="display: none;
+                    width: 100%; padding: 15px;
+                    background: #3d5a6b; color: white;
+                    border: none; border-radius: 8px;
+                    font-size: 16px; cursor: pointer;
+                    margin-top: 20px;">
 				Add to cart
 			</button>
 		</div>
@@ -75,11 +104,8 @@
 
 	<!-- Back to products -->
 	<a href="#/products"
-	   style="display: inline-block;
-			margin-top: 20px;
-			color: #3d5a6b;
-			text-decoration: none;">
+	   style="display: inline-block; margin-top: 20px;
+              color: #3d5a6b; text-decoration: none;">
 		Back to products
 	</a>
-
 </div>
