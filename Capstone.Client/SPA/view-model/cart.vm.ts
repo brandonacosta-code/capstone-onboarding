@@ -7,6 +7,51 @@ const SHIPPING = 10;
 // ── Observable ViewModel ──
 let cartObservable: any = null;
 
+// ── Notification Modal ──
+function showCartNotification(message: string, type: 'success' | 'error' | 'info'): void {
+    const overlay = document.getElementById('cart-notification');
+    const icon = document.getElementById('cart-notification-icon');
+    const msg = document.getElementById('cart-notification-message');
+    if (!overlay || !icon || !msg) return;
+
+    const colors = {
+        success: '#3d5a6b',
+        error: '#c0392b',
+        info: '#2c3e50'
+    };
+
+    icon.style.background = colors[type];
+    msg.innerHTML = message;
+    overlay.style.display = 'flex';
+
+    setTimeout(() => { overlay.style.display = 'none'; }, 3000);
+}
+
+function showOrderModal(orderId: any, subTotal: any, tax: any, shipping: any, total: any): void {
+    const overlay = document.getElementById('order-success-modal');
+    if (!overlay) return;
+
+    const setVal = (id: string, val: string) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+    };
+
+    setVal('order-id', '#' + orderId);
+    setVal('order-subtotal', '$' + subTotal.toFixed(2));
+    setVal('order-tax', '$' + tax.toFixed(2));
+    setVal('order-shipping', '$' + shipping.toFixed(2));
+    setVal('order-total', '$' + total.toFixed(2));
+
+    overlay.style.display = 'flex';
+}
+
+(window as any).closeOrderModal = (): void => {
+    const overlay = document.getElementById('order-success-modal');
+    if (overlay) overlay.style.display = 'none';
+    window.location.hash = '#/products';
+};
+
+//------- Helpers--------
 function escapeHtml(str: string): string {
     return str
         .replace(/&/g, '&amp;')
@@ -65,7 +110,11 @@ function renderCart(): void {
 (window as any).cartVM_increaseQty = (btn: HTMLElement): void => {
     const row = btn.closest('[data-productid]') as HTMLElement;
     const productId = parseInt(row.dataset.productid ?? '0', 10);
-    CartService.increaseQty(productId);
+    const success = CartService.increaseQty(productId);
+    if (!success) {
+        showCartNotification('No more stock available', 'error');
+        return;
+    }
     renderCart();
 };
 
@@ -79,7 +128,7 @@ function renderCart(): void {
 (window as any).cartVM_continueToPayment = async (): Promise<void> => {
     const items = CartService.getItems();
     if (items.length === 0) {
-        alert('Your cart is empty');
+        showCartNotification('Your cart is empty', 'error');
         return;
     }
 
@@ -108,6 +157,7 @@ function renderCart(): void {
 
         const order = await res.json();
         CartService.clear();
+        renderCart();
 
         const orderId = order.OrderId ?? order.orderId;
         const subTotal = order.SubTotal ?? order.subTotal ?? order.Subtotal;
@@ -115,20 +165,12 @@ function renderCart(): void {
         const shipping = order.Shipping ?? order.shipping;
         const total = order.Total ?? order.total;
 
-        alert(
-            'Order #' + orderId + ' created successfully!\n' +
-            'SubTotal: $' + subTotal.toFixed(2) + '\n' +
-            'Tax: $' + tax.toFixed(2) + '\n' +
-            'Shipping: $' + shipping.toFixed(2) + '\n' +
-            'Total: $' + total.toFixed(2)
-        );
+        showOrderModal(orderId, subTotal, tax, shipping, total);
 
-        window.location.hash = '#/products';
-
-    } catch (e) {
-        console.error(e);
-        alert('Error creating order. Please try again.');
-    }
+        } catch (e) {
+            console.error(e);
+            showCartNotification('Error creating order. Please try again.', 'error');
+        }
 };
 
 // ── CartVM Class ─────
