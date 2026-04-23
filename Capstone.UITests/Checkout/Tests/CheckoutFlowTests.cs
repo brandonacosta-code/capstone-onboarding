@@ -21,4 +21,14 @@ public class CheckoutFlowTests : TestBase
         await Actor.Expects(CartPage.OrderSuccessModal).ToBeVisibleAsync();
         await Actor.Expects(CartPage.OrderConfirmedHeading).ToHaveTextAsync("Order Confirmed!");
     }
+
+    [Test]
+    public async Task AddProductToCart_UntilOutOfStock_ShowsOutOfStockMessage()
+    {
+        await Actor.AttemptsToAsync(new AddProductToCartRepeatedly(
+            ProductListPage.MilkChocolateViewButton, times: 5));
+
+        await Actor.Expects(ProductDetailPage.AddToCartButton).ToBeHiddenAsync();
+        await Actor.Expects(ProductDetailPage.OutOfStockMessage).ToBeVisibleAsync();
+    }
 }
