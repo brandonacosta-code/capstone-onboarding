@@ -34,17 +34,16 @@ export class CartService {
 		this._items = this._items.filter(i => i.productId !== productId);
 	}
 
-	static increaseQty(productId: number): void {
+	static increaseQty(productId: number): boolean {
 		const item = this._items.find(i => i.productId === productId);
 
-		if (!item) return;
+		if (!item) return false;
 
-		if (item.qty + 1 > item.stock) {
-			alert('No more stock available');
-			return;
-		}
+		if (item.qty + 1 > item.stock) return false;  
+
 		item.qty += 1;
 		item.amount = item.qty * item.unitPrice;
+		return true;
 	}
 
 	static clear(): void {

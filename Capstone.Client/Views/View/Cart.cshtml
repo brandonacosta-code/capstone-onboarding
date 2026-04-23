@@ -2,73 +2,206 @@
 	Layout = null;
 }
 
-<div id="cart-container" style="padding: 20px; max-width: 900px; margin: 0 auto;">
+<!-- Cart empty / stock notification -->
+<div id="cart-notification" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;">
+	<div style="
+        background: white;
+        border-radius: 12px;
+        padding: 40px 50px;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        min-width: 260px;">
+		<div id="cart-notification-icon" style="
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;">
+			<span style="color: white; font-size: 28px;">&#33;</span>
+		</div>
+		<h3 id="cart-notification-message"
+			style="margin: 0; font-size: 16px; color: #2c3e50;">
+		</h3>
+	</div>
+</div>
+
+<!-- Order success modal -->
+<div id="order-success-modal" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;">
+	<div style="
+        background: white;
+        border-radius: 16px;
+        padding: 40px 50px;
+        text-align: center;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+        min-width: 320px;
+        max-width: 420px;">
+		<div style="
+            width: 70px; height: 70px;
+            background: #27ae60;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;">
+			<span style="color: white; font-size: 36px;">&#10003;</span>
+		</div>
+		<h2 style="color: #2c3e50; margin: 0 0 6px;">Order Confirmed!</h2>
+		<p style="color: #888; margin: 0 0 24px; font-size: 14px;">
+			Order <strong id="order-id" style="color: #3d5a6b;"></strong>
+		</p>
+		<div style="
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            text-align: left;">
+			<div style="display: flex; justify-content: space-between; padding: 4px 0; color: #555;">
+				<span>Subtotal</span>
+				<span id="order-subtotal" style="font-weight: 500;"></span>
+			</div>
+			<div style="display: flex; justify-content: space-between; padding: 4px 0; color: #555;">
+				<span>Tax (5%)</span>
+				<span id="order-tax" style="font-weight: 500;"></span>
+			</div>
+			<div style="display: flex; justify-content: space-between; padding: 4px 0; color: #555;">
+				<span>Shipping</span>
+				<span id="order-shipping" style="font-weight: 500;"></span>
+			</div>
+			<div style="
+                display: flex; justify-content: space-between;
+                padding: 10px 0 4px;
+                margin-top: 8px;
+                border-top: 1px solid #ddd;
+                font-weight: bold; font-size: 16px; color: #2c3e50;">
+				<span>Total</span>
+				<span id="order-total"></span>
+			</div>
+		</div>
+		<button onclick="closeOrderModal()" style="
+            width: 100%;
+            padding: 14px;
+            background: #3d5a6b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 500;">
+			Back to products
+		</button>
+	</div>
+</div>
+
+<!-- Cart -->
+<div id="cart-container" style="
+    padding: 30px;
+    max-width: 1100px;
+    margin: 0 auto;">
 
 	<!-- Header -->
-	<div style="background: linear-gradient(135deg, #2c3e50, #3d5a6b);
-                padding: 40px;
-                border-radius: 8px;
-                margin-bottom: 30px;
-                text-align: center;">
-		<h1 style="color: white; font-size: 2em;">Cart</h1>
+	<div style="
+        background: linear-gradient(135deg, #2c3e50, #3d5a6b);
+        padding: 40px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        text-align: center;">
+		<h1 style="color: white; font-size: 2em; margin: 0;">Shopping Cart</h1>
 	</div>
 
-	<!-- Cart Table -->
-	<div style="background: white;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                padding: 30px;">
+	<!-- Cart content -->
+	<div style="
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        padding: 30px 40px;">
 
 		<table style="width: 100%; border-collapse: collapse;">
 			<thead>
-				<tr style="border-bottom: 2px solid #eee; font-weight: bold;">
-					<td style="padding: 10px;">Product Name</td>
-					<td style="padding: 10px; text-align: right;">Amount $</td>
+				<tr style="border-bottom: 2px solid #eee;">
+					<th style="padding: 12px 0; text-align: left; color: #555; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
+						Product
+					</th>
+					<th style="padding: 12px 0; text-align: right; color: #555; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
+						Amount
+					</th>
 				</tr>
 			</thead>
 			<tbody id="cart-items-container"></tbody>
 		</table>
 
 		<!-- Totals -->
-		<div style="margin-top: 20px; border-top: 2px solid #eee; padding-top: 20px;">
-			<div style="display: flex; justify-content: space-between; padding: 5px 0;">
-				<span>Sub - total</span>
-				<span data-bind="text: subTotal"></span>
+		<div style="
+            margin-top: 24px;
+            border-top: 2px solid #eee;
+            padding-top: 24px;
+            max-width: 340px;
+            margin-left: auto;">
+			<div style="display: flex; justify-content: space-between; padding: 6px 0; color: #666;">
+				<span>Subtotal</span>
+				<span data-bind="text: subTotal" style="font-weight: 500;"></span>
 			</div>
-			<div style="display: flex; justify-content: space-between; padding: 5px 0;">
+			<div style="display: flex; justify-content: space-between; padding: 6px 0; color: #666;">
 				<span>Taxes (5%)</span>
-				<span data-bind="text: tax"></span>
+				<span data-bind="text: tax" style="font-weight: 500;"></span>
 			</div>
-			<div style="display: flex; justify-content: space-between; padding: 5px 0;">
+			<div style="display: flex; justify-content: space-between; padding: 6px 0; color: #666;">
 				<span>Shipping</span>
-				<span data-bind="text: shipping"></span>
+				<span data-bind="text: shipping" style="font-weight: 500;"></span>
 			</div>
-			<div style="display: flex; justify-content: space-between; padding: 5px 0; font-weight: bold;">
+			<div style="
+                display: flex; justify-content: space-between;
+                padding: 12px 0 6px;
+                margin-top: 8px;
+                border-top: 1px solid #eee;
+                font-weight: bold;
+                font-size: 18px;
+                color: #2c3e50;">
 				<span>Total</span>
 				<span data-bind="text: total"></span>
 			</div>
 		</div>
 
-		<!-- Continue to payment -->
-		<button onclick="cartVM_continueToPayment()"
-				style="margin-top: 20px;
-                       padding: 15px 30px;
-                       background: #3d5a6b;
-                       color: white;
-                       border: none;
-                       border-radius: 8px;
-                       font-size: 16px;
-                       cursor: pointer;">
-			Continue to payment
-		</button>
+		<!-- Button -->
+		<div style="margin-top: 30px; display: flex; justify-content: flex-end;">
+			<button onclick="cartVM_continueToPayment()" style="
+                padding: 15px 40px;
+                background: #3d5a6b;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+                letter-spacing: 0.3px;">
+				Continue to payment
+			</button>
+		</div>
 	</div>
 
-	<!-- Back to products -->
-	<a href="#/products"
-	   style="display: inline-block;
-              margin-top: 20px;
-              color: #3d5a6b;
-              text-decoration: none;">
-		Back to products
+	<!-- Back -->
+	<a href="#/products" style="
+        display: inline-block;
+        margin-top: 20px;
+        color: #3d5a6b;
+        text-decoration: none;
+        font-size: 14px;">
+		&#8592; Back to products
 	</a>
 </div>
