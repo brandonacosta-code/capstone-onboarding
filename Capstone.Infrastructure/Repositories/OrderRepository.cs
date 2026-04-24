@@ -20,76 +20,53 @@ namespace Capstone.Infrastructure.Repositories
             _connectionString = connectionString;
         }
 
-		public async Task<int> CreateOrder(CreateOrderDTO order)
+		public async Task<int> CreateOrder(CreateOrderDTO order, decimal subTotal, decimal tax, decimal shipping, decimal total)
 		{
-			const decimal TAX_RATE = 0.05m;
-			const decimal SHIPPING = 10m;
-
-			decimal subTotal = 0;
-			foreach (var item in order.Items)
-			{
-				subTotal += item.Amount;
-			}
-
-			decimal tax = subTotal * TAX_RATE;
-			decimal total = subTotal + tax + SHIPPING;
-
 			using (var conn = new SqlConnection(_connectionString))
 			{
 				await conn.OpenAsync();
-				using (var transaction = conn.BeginTransaction()) 
+				using (var transaction = conn.BeginTransaction())
 				{
 					try
 					{
-						// Insert Order
 						const string insertOrder = @"
                     INSERT INTO tblOrders
                         (Subtotal, Tax, Shipping, Total)
-                    Values
+                    VALUES
                         (@SubTotal, @Tax, @Shipping, @Total);
                     SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
 						int orderId = await conn.QuerySingleAsync<int>(
 							insertOrder,
-							new
-							{
-								SubTotal = subTotal,
-								Tax = tax,
-								Shipping = SHIPPING,
-								Total = total
-							},
+							new { SubTotal = subTotal, Tax = tax, Shipping = shipping, Total = total },
 							transaction
 						);
 
-						// Insert order items
 						const string insertItem = @"
                     INSERT INTO tblOrderItems
                         (OrderId, ProductId, Qty, UnitPrice, Amount)
-                    Values
+                    VALUES
                         (@OrderId, @ProductId, @Qty, @UnitPrice, @Amount);";
 
-						foreach (var item in order.Items)
-						{
-							await conn.ExecuteAsync(
-								insertItem,
-								new
-								{
-									OrderId = orderId,
-									ProductId = item.ProductId,
-									Qty = item.Qty,
-									UnitPrice = item.UnitPrice,
-									Amount = item.Amount
-								},
-								transaction
-							);
-						}
+						await conn.ExecuteAsync(
+							insertItem,
+							order.Items.Select(item => new
+							{
+								OrderId = orderId,
+								ProductId = item.ProductId,
+								Qty = item.Qty,
+								UnitPrice = item.UnitPrice,
+								Amount = item.Amount
+							}),
+							transaction
+						);
 
-						transaction.Commit();  
+						transaction.Commit();
 						return orderId;
 					}
 					catch
 					{
-						transaction.Rollback(); 
+						transaction.Rollback();
 						throw;
 					}
 				}
