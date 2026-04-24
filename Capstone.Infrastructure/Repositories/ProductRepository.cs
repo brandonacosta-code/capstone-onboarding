@@ -20,7 +20,7 @@ namespace Capstone.Infrastructure.Repositories
 
 		public async Task<IEnumerable<ProductDTO>> GetProducts(string search, string sortBy, string sortDirection)
 		{
-			var query = "SELECT * FROM dbo.tblProducts WHERE 1=1";
+			var query = "SELECT Id, Name, UnitPrice, Description, ImageUrl, Stock FROM dbo.tblProducts WHERE 1=1";
 
 			if (!string.IsNullOrEmpty(search))
 			{
@@ -49,7 +49,7 @@ namespace Capstone.Infrastructure.Repositories
 
 		public async Task<ProductDTO> GetProductById(int id)
 		{
-			var query = "SELECT * FROM dbo.tblProducts WHERE Id = @Id";
+			var query = "SELECT Id, Name, UnitPrice, Description, ImageUrl, Stock FROM dbo.tblProducts WHERE Id = @Id";
 
 			using (var conn = new SqlConnection(_connectionString))
 			{
