@@ -9,6 +9,6 @@ namespace Capstone.Core.Interfaces
 {
     public interface IOrderRepository
     {
-		Task<int> CreateOrder(CreateOrderDTO order);
+		Task<int> CreateOrder(CreateOrderDTO order, decimal subTotal, decimal tax, decimal shipping, decimal total);
 	}
 }

@@ -50,16 +50,13 @@ namespace Capstone.Application.CQRS.Commands
 			}
 
 			// Calculate totals
-			decimal subTotal = 0;
-			foreach (var item in order.Items)
-				subTotal += item.Amount;
-
+			decimal subTotal = order.Items.Sum(i => i.Amount);
 			decimal tax = subTotal * TAX_RATE;
 			decimal total = subTotal + tax + SHIPPING;
 
-			int orderId = await _orderRepository.CreateOrder(order); 
+			int orderId = await _orderRepository.CreateOrder(order, subTotal, tax, SHIPPING, total);
 
-			var summary = new OrderSummaryDTO
+			return new OrderSummaryDTO
 			{
 				OrderId = orderId,
 				Items = order.Items,
@@ -67,9 +64,7 @@ namespace Capstone.Application.CQRS.Commands
 				Tax = tax,
 				Shipping = SHIPPING,
 				Total = total
-			};
-
-			return summary; 
+			}; 
 		}
 	}
 }

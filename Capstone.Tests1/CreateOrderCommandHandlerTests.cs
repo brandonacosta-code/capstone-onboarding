@@ -27,8 +27,13 @@ namespace Capstone.Tests
 		public void Handle_ValidOrder_ReturnsOrderSummary()
 		{
 			// Arrange
-			_mockRepo.Setup(r => r.CreateOrder(It.IsAny<CreateOrderDTO>()))
-		 .ReturnsAsync(1);
+			_mockRepo.Setup(r => r.CreateOrder(
+				It.IsAny<CreateOrderDTO>(),
+				It.IsAny<decimal>(),  // subTotal
+				It.IsAny<decimal>(),  // tax
+				It.IsAny<decimal>(),  // shipping
+				It.IsAny<decimal>()   // total
+			)).ReturnsAsync(1);
 
 			var order = new CreateOrderDTO
 			{
@@ -62,8 +67,13 @@ namespace Capstone.Tests
 		public void Handle_MultipleItems_CalculatesTotalsCorrectly()
 		{
 			// Arrange
-			_mockRepo.Setup(r => r.CreateOrder(It.IsAny<CreateOrderDTO>()))
-					 .ReturnsAsync(2);
+			_mockRepo.Setup(r => r.CreateOrder(
+				It.IsAny<CreateOrderDTO>(),
+				It.IsAny<decimal>(),  // subTotal
+				It.IsAny<decimal>(),  // tax
+				It.IsAny<decimal>(),  // shipping
+				It.IsAny<decimal>()   // total
+			)).ReturnsAsync(2);
 
 			var order = new CreateOrderDTO
 			{
@@ -94,8 +104,13 @@ namespace Capstone.Tests
 		public void Handle_CallsRepository_Once()
 		{
 			// Arrange
-			_mockRepo.Setup(r => r.CreateOrder(It.IsAny<CreateOrderDTO>()))
-					 .ReturnsAsync(3);
+			_mockRepo.Setup(r => r.CreateOrder(
+				It.IsAny<CreateOrderDTO>(),
+				It.IsAny<decimal>(),  // subTotal
+				It.IsAny<decimal>(),  // tax
+				It.IsAny<decimal>(),  // shipping
+				It.IsAny<decimal>()   // total
+			)).ReturnsAsync(3);
 
 			var order = new CreateOrderDTO
 			{
@@ -111,8 +126,13 @@ namespace Capstone.Tests
 			_handler.Handle(new CreateOrderCommand(order), default).Wait();
 
 			// Assert
-			_mockRepo.Verify(
-				r => r.CreateOrder(It.IsAny<CreateOrderDTO>()),
+			_mockRepo.Verify((r => r.CreateOrder(
+				It.IsAny<CreateOrderDTO>(),
+				It.IsAny<decimal>(),  // subTotal
+				It.IsAny<decimal>(),  // tax
+				It.IsAny<decimal>(),  // shipping
+				It.IsAny<decimal>()   // total
+			)),
 				Times.Once
 			);
 		}
