@@ -14,6 +14,7 @@ using Capstone.Infrastructure.Repositories;
 using System.Configuration;
 using Unity.Injection;
 using Capstone.Core.Interfaces;
+using Capstone.Api.App_Start;
 
 namespace Capstone.Api
 {
@@ -26,18 +27,8 @@ namespace Capstone.Api
             // Web API routes
             config.MapHttpAttributeRoutes();
 
-            var container = new UnityContainer();
-
-            string connString = ConfigurationManager
-                .ConnectionStrings["CapstoneDB"]
-                .ConnectionString;
-
-            container.RegisterMediator(new HierarchicalLifetimeManager());
-            container.RegisterMediatorHandlers(Assembly.GetAssembly(typeof(Ping)));
-            container.RegisterType<IMediator, Mediator>(new ContainerControlledLifetimeManager());
-            container.RegisterType<IMessageBus, MessageBus>(new ContainerControlledLifetimeManager());
-            container.RegisterType<IProductRepository, ProductRepository>(new ContainerControlledLifetimeManager(), new InjectionConstructor(connString));
-			container.RegisterType<IOrderRepository, OrderRepository>(new ContainerControlledLifetimeManager(), new InjectionConstructor(connString));
+            //Unity
+            var container = UnityConfig.RegisterComponents(); ;
 			config.DependencyResolver = new UnityResolver(container);
 
 
